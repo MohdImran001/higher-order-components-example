@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { fetchUsers } from "../service";
 import User from "./User";
 
 const UserList = () => {
@@ -9,18 +10,16 @@ const UserList = () => {
   const [filteredUsers, setFilteredUsers] = useState([]);
 
   useEffect(() => {
-    setLoading(true);
-    fetch("https://dummyapi.io/data/v1/user?limit=10", {
-      headers: {
-        "app-id": "613358c887895d7ed5dc9a07"
-      }
-    })
-      .then((res) => res.json())
-      .then((users) => {
-        setFilteredUsers(users.data);
-        setUsers(users.data);
-        setLoading(false);
-      });
+    async function _fetchUsers() {
+      setLoading(true);
+      const users = await fetchUsers();
+
+      setFilteredUsers(users);
+      setUsers(users);
+      setLoading(false);
+    }
+
+    _fetchUsers();
   }, []);
 
   const handleChange = (e) => {

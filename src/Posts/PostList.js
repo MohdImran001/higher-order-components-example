@@ -1,26 +1,25 @@
 import { useState, useEffect } from "react";
+import { fetchPosts } from "../service";
 import Post from "./Post";
 
 const PostList = () => {
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
 
+  const [loading, setLoading] = useState(false);
   const [value, setValue] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
 
   useEffect(() => {
-    setLoading(true);
-    fetch("https://dummyapi.io/data/v1/post?limit=10", {
-      headers: {
-        "app-id": "613358c887895d7ed5dc9a07"
-      }
-    })
-      .then((res) => res.json())
-      .then((posts) => {
-        setPosts(posts.data);
-        setFilteredPosts(posts.data);
-        setLoading(false);
-      });
+    async function _fetchPosts() {
+      setLoading(true);
+      const posts = await fetchPosts();
+
+      setPosts(posts);
+      setFilteredPosts(posts);
+      setLoading(false);
+    }
+
+    _fetchPosts();
   }, []);
 
   const handleChange = (e) => {
